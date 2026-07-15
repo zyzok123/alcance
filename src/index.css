@@ -1,0 +1,124 @@
+@import "tailwindcss";
+
+/*
+ * Tokens del HUD — únicos permitidos. Nada de colores hardcodeados
+ * en componentes.
+ */
+@theme {
+  --color-fondo: #0a0e14;
+  --color-superficie: #101623;
+  --color-borde: #1c2635;
+  --color-texto: #eaf6ff;
+  --color-texto-sec: #7a8699;
+  --color-primario: #00e5ff;
+  --color-secundario: #ff2ed1;
+  --color-exito: #39ff88;
+  --color-alerta: #ffb020;
+  --color-peligro: #ff5c7a;
+
+  --font-display: "Chakra Petch", ui-monospace, "Cascadia Mono", monospace;
+  --font-ui: "Space Grotesk", system-ui, sans-serif;
+}
+
+html,
+body {
+  background: var(--color-fondo);
+  color: var(--color-texto);
+  font-family: var(--font-ui);
+  overscroll-behavior: none;
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* Números tabulares: los montos no bailan al cambiar dígitos. */
+.font-display {
+  font-family: var(--font-display);
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 0.01em;
+}
+
+/* Retícula de terminal detrás del gauge. Opacidad < 5%. */
+.hud-grid-bg {
+  background-image:
+    linear-gradient(rgba(0, 229, 255, 0.04) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(0, 229, 255, 0.04) 1px, transparent 1px);
+  background-size: 28px 28px;
+}
+
+/* Esquinas cortadas en ángulo — firma visual. Nada de border-radius. */
+.clip-corner {
+  clip-path: polygon(
+    14px 0,
+    100% 0,
+    100% calc(100% - 14px),
+    calc(100% - 14px) 100%,
+    0 100%,
+    0 14px
+  );
+}
+.clip-corner-sm {
+  clip-path: polygon(
+    8px 0,
+    100% 0,
+    100% calc(100% - 8px),
+    calc(100% - 8px) 100%,
+    0 100%,
+    0 8px
+  );
+}
+
+/* Glows: máximo 2 simultáneos por pantalla (gauge + FAB). */
+.glow-cyan {
+  filter: drop-shadow(0 0 6px rgba(0, 229, 255, 0.5));
+}
+.glow-magenta {
+  filter: drop-shadow(0 0 10px rgba(255, 46, 209, 0.45));
+}
+
+/* Glitch-flash de celebración/confirmación: solo transform + opacity, <=300ms. */
+@keyframes glitch-flash {
+  0% {
+    transform: translateX(0);
+    opacity: 0;
+  }
+  20% {
+    transform: translateX(-3px);
+    opacity: 1;
+  }
+  40% {
+    transform: translateX(3px);
+    opacity: 0.6;
+  }
+  60% {
+    transform: translateX(-2px);
+    opacity: 1;
+  }
+  80% {
+    transform: translateX(1px);
+    opacity: 0.85;
+  }
+  100% {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+.glitch-flash {
+  animation: glitch-flash 280ms steps(2, end) 1;
+}
+
+/* Modo bajo estímulo: apaga glows y animaciones CSS. */
+[data-low-stim] .glow-cyan,
+[data-low-stim] .glow-magenta {
+  filter: none;
+}
+[data-low-stim] * {
+  animation-duration: 0.01ms !important;
+  transition-duration: 0.01ms !important;
+}
+
+/* Safe areas Android */
+.safe-top {
+  padding-top: max(env(safe-area-inset-top), 12px);
+}
+.safe-bottom {
+  padding-bottom: max(env(safe-area-inset-bottom), 12px);
+}
