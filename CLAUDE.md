@@ -148,3 +148,15 @@ Linux); en esta máquina vive en
 - Verificación visual en navegador quedó pendiente en Fase 1 (permisos del
   Browser pane denegados); el build compila y la lógica es useLiveQuery
   puro. Probar en el APK.
+
+## Fase 1 — cierre (2026-07-15)
+
+APK publicado: `v0.1.3`
+(github.com/zyzok123/alcance/releases/tag/v0.1.3). CI verde tras 2 fixes:
+- Capacitor CLI 8 exige **Node ≥22** (CI tenía 20 → fallaba en `cap sync`).
+- Capacitor Android 8 exige **Java 21** (CI tenía 17 → fallaba
+  `compileDebugJavaWithJavac`, "invalid source release: 21").
+
+Ambos ya corregidos en `.github/workflows/build-apk.yml`. Próxima sesión:
+arrancar Fase 2 (payday wizard + deudas + sobres automáticos + rachas) con
+OK explícito de Ronald.
