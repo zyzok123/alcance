@@ -1,0 +1,12 @@
+node_modules/
+dist/
+*.local
+.DS_Store
+*.log
+
+# Keystore de firma: NUNCA commitear
+*.keystore
+*.jks
+
+# Config local del agente
+.claude/
