@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">Alcance</string>
+    <string name="title_activity_main">Alcance</string>
+    <string name="package_name">com.ronald.alcance</string>
+    <string name="custom_url_scheme">com.ronald.alcance</string>
+</resources>
