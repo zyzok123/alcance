@@ -11,11 +11,13 @@ import {
 } from "@/lib/money";
 import { registrarGasto, repetirUltimoGasto, ultimoGasto } from "@/services/transactions";
 import { useSettings } from "@/hooks/useSettings";
+import { useTasaVigente } from "@/hooks/useTasaVigente";
+import { etiquetaFuente } from "@/services/tasas";
 import { Sheet } from "@/components/ui/Sheet";
 import { CategoryIcon } from "@/components/ui/CategoryIcon";
+import { MonedaToggle } from "@/components/ui/MonedaToggle";
 import { TerminalFeedback } from "./TerminalFeedback";
 import { Numpad, aplicarTecla } from "./Numpad";
-import { cn } from "@/lib/utils";
 
 /**
  * Registro ultrarrápido — la feature más crítica.
@@ -29,8 +31,9 @@ export function QuickAdd({ abierto, onCerrar }: { abierto: boolean; onCerrar: ()
   const [verTodas, setVerTodas] = useState(false);
   const [guardado, setGuardado] = useState(false);
 
+  const tasaVigente = useTasaVigente();
   const monedaActiva: Moneda = moneda ?? settings?.moneda_registro_default ?? "VES";
-  const tasa = settings?.tasa_manual_x10000 ?? 0;
+  const tasa = tasaVigente?.tasaX10000 ?? 0;
   const centavos = parseToCentavos(entrada);
   const equivUsd = monedaActiva === "VES" ? vesToUsdCentavos(centavos, tasa) : centavos;
 
@@ -96,7 +99,10 @@ export function QuickAdd({ abierto, onCerrar }: { abierto: boolean; onCerrar: ()
               {monedaActiva === "VES" && (
                 <p className="font-display text-xs text-primario">
                   {tasa > 0 ? (
-                    <>≈ $ {formatCentavos(equivUsd)}</>
+                    <>
+                      ≈ $ {formatCentavos(equivUsd)}{" "}
+                      <span className="text-texto-sec">({etiquetaFuente(tasaVigente?.fuente)})</span>
+                    </>
                   ) : (
                     <span className="text-alerta flex items-center gap-1">
                       <TriangleAlert size={12} /> sin tasa: configúrala en Ajustes
@@ -105,27 +111,14 @@ export function QuickAdd({ abierto, onCerrar }: { abierto: boolean; onCerrar: ()
                 </p>
               )}
             </div>
-            <div className="flex clip-corner-sm p-px bg-borde shrink-0">
-              {(["VES", "USD"] as const).map((m) => (
-                <button
-                  key={m}
-                  onClick={() => setMoneda(m)}
-                  className={cn(
-                    "px-4 py-2 font-display text-sm",
-                    monedaActiva === m ? "bg-primario text-fondo" : "bg-superficie text-texto-sec",
-                  )}
-                >
-                  {m === "VES" ? "Bs" : "$"}
-                </button>
-              ))}
-            </div>
+            <MonedaToggle value={monedaActiva} onChange={setMoneda} />
           </div>
 
           {/* Repetir último gasto: un tap */}
           {ultimo && catUltimo && (
             <button
               onClick={() => void repetir()}
-              className="clip-corner-sm bg-superficie px-3 py-2 flex items-center gap-2
+              className="glass rounded-full bg-superficie px-3 py-2 flex items-center gap-2
                          text-sm text-texto-sec active:scale-[0.98] transition-transform self-start"
             >
               <RotateCcw size={14} className="text-secundario" />
@@ -141,7 +134,7 @@ export function QuickAdd({ abierto, onCerrar }: { abierto: boolean; onCerrar: ()
                   key={cat.id}
                   onClick={() => void guardar(cat)}
                   disabled={centavos <= 0}
-                  className="clip-corner-sm bg-superficie py-3 flex flex-col items-center gap-1
+                  className="glass rounded-xl bg-superficie py-3 flex flex-col items-center gap-1
                              active:scale-95 transition-transform disabled:opacity-35"
                 >
                   <CategoryIcon icono={cat.icono} color={cat.color} />

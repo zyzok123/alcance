@@ -22,7 +22,7 @@ export function Sheet({
       {abierto && (
         <div className="fixed inset-0 z-40">
           <motion.div
-            className="absolute inset-0 bg-fondo/80"
+            className="absolute inset-0 bg-[#06120e]/70"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
@@ -31,8 +31,7 @@ export function Sheet({
           />
           <motion.div
             className={cn(
-              "absolute inset-x-0 bottom-0 bg-borde p-px",
-              "clip-corner",
+              "absolute inset-x-0 bottom-0 glass rounded-t-3xl rounded-b-none",
               alto === "full" ? "top-6" : "max-h-[92dvh]",
             )}
             initial={{ y: "100%" }}
@@ -40,7 +39,7 @@ export function Sheet({
             exit={{ y: "100%" }}
             transition={{ type: "tween", duration: 0.22, ease: "easeOut" }}
           >
-            <div className="clip-corner bg-fondo h-full flex flex-col">
+            <div className="h-full flex flex-col">
               <div className="flex items-center justify-between px-4 pt-4 pb-2">
                 <h2 className="font-display text-sm tracking-[0.2em] uppercase text-primario">
                   {titulo}

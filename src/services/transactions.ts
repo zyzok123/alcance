@@ -1,6 +1,7 @@
 import { db, type Transaction } from "@/db/schema";
 import { vesToUsdCentavos, type Moneda } from "@/lib/money";
 import { ahoraISO } from "@/lib/dates";
+import { getTasaVigente } from "@/services/tasas";
 
 export interface NuevoGasto {
   monto_centavos: number;
@@ -17,7 +18,7 @@ export interface NuevoGasto {
 export async function registrarGasto(gasto: NuevoGasto): Promise<Transaction> {
   const settings = await db.settings.get(1);
   const umbral = settings?.umbral_hormiga_usd_centavos ?? 300;
-  const tasa = settings?.tasa_manual_x10000 ?? 0;
+  const { tasaX10000: tasa, fuente } = await getTasaVigente();
 
   const esUsd = gasto.moneda !== "VES";
   const montoUsd = esUsd
@@ -28,7 +29,7 @@ export async function registrarGasto(gasto: NuevoGasto): Promise<Transaction> {
     monto_centavos: gasto.monto_centavos,
     moneda: gasto.moneda,
     tasa_cambio_al_momento_x10000: esUsd ? null : tasa || null,
-    fuente_tasa: esUsd ? null : tasa > 0 ? "manual" : null,
+    fuente_tasa: esUsd ? null : fuente,
     monto_usd_centavos: montoUsd,
     cuenta_origen_id: gasto.cuenta_id,
     cuenta_destino_id: null,

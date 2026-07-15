@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { animate, motion } from "framer-motion";
-import { formatCentavos } from "@/lib/money";
+import { formatCentavos, usdToVesCentavos } from "@/lib/money";
 import { cn } from "@/lib/utils";
 
 const R = 104;
@@ -15,11 +15,13 @@ export function GaugeHero({
   presupuestoHoyCentavos,
   fraccionConsumida,
   presupuestoMananaCentavos,
+  tasaX10000,
   lowStim,
 }: {
   presupuestoHoyCentavos: number;
   fraccionConsumida: number; // 0..1
   presupuestoMananaCentavos: number | null;
+  tasaX10000: number;
   lowStim: boolean;
 }) {
   const negativo = presupuestoHoyCentavos < 0;
@@ -61,7 +63,7 @@ export function GaugeHero({
             stroke={negativo ? "var(--color-peligro)" : "var(--color-primario)"}
             strokeWidth="5"
             strokeDasharray={CIRCUNFERENCIA}
-            className={negativo ? "" : "glow-cyan"}
+            className={negativo ? "" : "glow-primario"}
             initial={{ strokeDashoffset: CIRCUNFERENCIA }}
             animate={{ strokeDashoffset: CIRCUNFERENCIA * (1 - restante) }}
             transition={{ duration: lowStim ? 0 : 0.9, ease: "easeOut" }}
@@ -80,6 +82,11 @@ export function GaugeHero({
             <span className="text-2xl align-top mr-1 text-texto-sec">$</span>
             {formatCentavos(mostrado)}
           </span>
+          {tasaX10000 > 0 && mostrado > 0 && (
+            <span className="font-display text-xs text-texto-sec mt-0.5">
+              ≈ Bs {formatCentavos(usdToVesCentavos(mostrado, tasaX10000))} hoy
+            </span>
+          )}
         </div>
       </div>
       {negativo && presupuestoMananaCentavos !== null && (

@@ -2,7 +2,7 @@
   "appId": "com.ronald.alcance",
   "appName": "Alcance",
   "webDir": "dist",
-  "backgroundColor": "#0A0E14",
+  "backgroundColor": "#0B1A16",
   "android": {
     "allowMixedContent": false
   }

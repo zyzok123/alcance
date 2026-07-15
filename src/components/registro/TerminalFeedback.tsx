@@ -13,13 +13,11 @@ export function TerminalFeedback({ onDone }: { onDone: () => void }) {
   }, [onDone]);
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-fondo/90">
-      <div className="clip-corner p-px bg-exito glitch-flash">
-        <div className="clip-corner bg-fondo px-8 py-6">
-          <p className="font-display text-exito tracking-[0.2em] text-sm">
-            TRANSACCIÓN REGISTRADA ✓
-          </p>
-        </div>
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-[#06120e]/70">
+      <div className="glass rounded-2xl px-8 py-6 pop-in">
+        <p className="font-display text-exito tracking-[0.2em] text-sm">
+          REGISTRADO ✓
+        </p>
       </div>
     </div>
   );

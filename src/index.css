@@ -1,20 +1,21 @@
 @import "tailwindcss";
 
 /*
- * Tokens del HUD — únicos permitidos. Nada de colores hardcodeados
- * en componentes.
+ * Tokens "Liquid Glass Lofi" — únicos permitidos. Nada de colores
+ * hardcodeados en componentes. Paleta jade/ámbar sobre fondo fotográfico
+ * (cafetería nocturna) con tinte verde para legibilidad.
  */
 @theme {
-  --color-fondo: #0a0e14;
-  --color-superficie: #101623;
-  --color-borde: #1c2635;
-  --color-texto: #eaf6ff;
-  --color-texto-sec: #7a8699;
-  --color-primario: #00e5ff;
-  --color-secundario: #ff2ed1;
-  --color-exito: #39ff88;
-  --color-alerta: #ffb020;
-  --color-peligro: #ff5c7a;
+  --color-fondo: #0b1a16;
+  --color-superficie: rgba(235, 250, 240, 0.1);
+  --color-borde: rgba(255, 255, 255, 0.22);
+  --color-texto: #f2f7f2;
+  --color-texto-sec: #b7c9be;
+  --color-primario: #5fd6a8;
+  --color-secundario: #f2a765;
+  --color-exito: #8fd97e;
+  --color-alerta: #f0b955;
+  --color-peligro: #ea8188;
 
   --font-display: "Chakra Petch", ui-monospace, "Cascadia Mono", monospace;
   --font-ui: "Space Grotesk", system-ui, sans-serif;
@@ -22,7 +23,12 @@
 
 html,
 body {
-  background: var(--color-fondo);
+  min-height: 100dvh;
+  background:
+    linear-gradient(180deg, rgba(8, 26, 20, 0.55), rgba(6, 16, 12, 0.82)),
+    linear-gradient(160deg, rgba(20, 70, 45, 0.35), rgba(6, 16, 12, 0.1)),
+    url("./assets/fondo-cafeteria.jpg") center / cover no-repeat;
+  background-color: var(--color-fondo);
   color: var(--color-texto);
   font-family: var(--font-ui);
   overscroll-behavior: none;
@@ -36,78 +42,43 @@ body {
   letter-spacing: 0.01em;
 }
 
-/* Retícula de terminal detrás del gauge. Opacidad < 5%. */
-.hud-grid-bg {
-  background-image:
-    linear-gradient(rgba(0, 229, 255, 0.04) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(0, 229, 255, 0.04) 1px, transparent 1px);
-  background-size: 28px 28px;
-}
-
-/* Esquinas cortadas en ángulo — firma visual. Nada de border-radius. */
-.clip-corner {
-  clip-path: polygon(
-    14px 0,
-    100% 0,
-    100% calc(100% - 14px),
-    calc(100% - 14px) 100%,
-    0 100%,
-    0 14px
-  );
-}
-.clip-corner-sm {
-  clip-path: polygon(
-    8px 0,
-    100% 0,
-    100% calc(100% - 8px),
-    calc(100% - 8px) 100%,
-    0 100%,
-    0 8px
-  );
+/* Panel de vidrio: base de cards, sheets, inputs. Blur + borde + sheen superior. */
+.glass {
+  background: var(--color-superficie);
+  border: 1px solid var(--color-borde);
+  backdrop-filter: blur(20px) saturate(160%);
+  -webkit-backdrop-filter: blur(20px) saturate(160%);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.28),
+    0 8px 28px rgba(0, 0, 0, 0.28);
 }
 
 /* Glows: máximo 2 simultáneos por pantalla (gauge + FAB). */
-.glow-cyan {
-  filter: drop-shadow(0 0 6px rgba(0, 229, 255, 0.5));
+.glow-primario {
+  filter: drop-shadow(0 0 8px rgba(95, 214, 168, 0.5));
 }
-.glow-magenta {
-  filter: drop-shadow(0 0 10px rgba(255, 46, 209, 0.45));
+.glow-secundario {
+  filter: drop-shadow(0 0 10px rgba(242, 167, 101, 0.5));
 }
 
-/* Glitch-flash de celebración/confirmación: solo transform + opacity, <=300ms. */
-@keyframes glitch-flash {
+/* Confirmación de registro: pop suave, calmo (sin glitch/shake). */
+@keyframes pop-in {
   0% {
-    transform: translateX(0);
+    transform: scale(0.9);
     opacity: 0;
   }
-  20% {
-    transform: translateX(-3px);
-    opacity: 1;
-  }
-  40% {
-    transform: translateX(3px);
-    opacity: 0.6;
-  }
-  60% {
-    transform: translateX(-2px);
-    opacity: 1;
-  }
-  80% {
-    transform: translateX(1px);
-    opacity: 0.85;
-  }
   100% {
-    transform: translateX(0);
+    transform: scale(1);
     opacity: 1;
   }
 }
-.glitch-flash {
-  animation: glitch-flash 280ms steps(2, end) 1;
+.pop-in {
+  animation: pop-in 220ms ease-out 1;
 }
 
 /* Modo bajo estímulo: apaga glows y animaciones CSS. */
-[data-low-stim] .glow-cyan,
-[data-low-stim] .glow-magenta {
+[data-low-stim] .glow-primario,
+[data-low-stim] .glow-secundario {
   filter: none;
 }
 [data-low-stim] * {

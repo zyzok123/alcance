@@ -14,8 +14,8 @@ export function Numpad({
         <button
           key={t}
           onClick={() => onTecla(t)}
-          className="clip-corner-sm bg-superficie h-14 font-display text-2xl text-texto
-                     active:scale-95 active:bg-borde transition-transform
+          className="rounded-xl border border-borde bg-superficie h-14 font-display text-2xl text-texto
+                     active:scale-95 active:bg-white/20 transition-transform
                      flex items-center justify-center"
           aria-label={t === "borrar" ? "Borrar" : t}
         >

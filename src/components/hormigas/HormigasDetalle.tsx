@@ -4,7 +4,6 @@ import { formatCentavos, formatMonto } from "@/lib/money";
 import type { Category } from "@/db/schema";
 import type { ResumenHormigas } from "@/services/hormigas";
 
-/** Detalle simple del mes (la pantalla completa con proyección llega en Fase 4). */
 export function HormigasDetalle({
   abierto,
   onCerrar,
@@ -18,13 +17,22 @@ export function HormigasDetalle({
 }) {
   return (
     <Sheet abierto={abierto} onCerrar={onCerrar} titulo="Gastos hormiga">
-      <p className="text-sm text-texto-sec mb-3">
+      <p className="text-sm text-texto-sec mb-1.5">
         Este mes:{" "}
         <span className="font-display text-alerta">
           {hormigas.cantidad} {hormigas.cantidad === 1 ? "gasto pequeño" : "gastos pequeños"} = ${" "}
           {formatCentavos(hormigas.totalUsdCentavos)}
         </span>
       </p>
+      {hormigas.cantidad > 0 && (
+        <p className="text-sm text-texto-sec mb-3">
+          A este ritmo, terminás el mes con{" "}
+          <span className="font-display text-alerta">
+            ≈ $ {formatCentavos(hormigas.proyeccionMesUsdCentavos)}
+          </span>{" "}
+          en hormigas.
+        </p>
+      )}
       <ul>
         {hormigas.transacciones.map((t) => {
           const cat = t.categoria_id !== null ? categorias.get(t.categoria_id) : undefined;

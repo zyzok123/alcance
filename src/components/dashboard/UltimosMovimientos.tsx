@@ -1,14 +1,16 @@
 import { HudCard } from "@/components/ui/HudCard";
 import { CategoryIcon } from "@/components/ui/CategoryIcon";
-import { formatMonto } from "@/lib/money";
+import { formatCentavos, formatMonto, usdToVesCentavos } from "@/lib/money";
 import type { Category, Transaction } from "@/db/schema";
 
 export function UltimosMovimientos({
   transacciones,
   categorias,
+  tasaX10000,
 }: {
   transacciones: Transaction[];
   categorias: Map<number, Category>;
+  tasaX10000: number;
 }) {
   if (transacciones.length === 0) return null;
   return (
@@ -19,6 +21,12 @@ export function UltimosMovimientos({
       <ul>
         {transacciones.map((t) => {
           const cat = t.categoria_id !== null ? categorias.get(t.categoria_id) : undefined;
+          const equivalente =
+            t.moneda === "VES"
+              ? `≈ $ ${formatCentavos(t.monto_usd_centavos)}`
+              : tasaX10000 > 0
+                ? `≈ Bs ${formatCentavos(usdToVesCentavos(t.monto_centavos, tasaX10000))} hoy`
+                : null;
           return (
             <li key={t.id} className="flex items-center gap-3 px-1 py-2 border-t border-borde">
               <CategoryIcon icono={cat?.icono ?? ""} color={cat?.color ?? "primario"} size={18} />
@@ -29,9 +37,14 @@ export function UltimosMovimientos({
                   {t.es_hormiga && <span className="text-alerta"> · hormiga</span>}
                 </p>
               </div>
-              <span className="font-display text-sm text-texto shrink-0">
-                {formatMonto(t.monto_centavos, t.moneda)}
-              </span>
+              <div className="text-right shrink-0">
+                <p className="font-display text-sm text-texto">
+                  {formatMonto(t.monto_centavos, t.moneda)}
+                </p>
+                {equivalente && (
+                  <p className="font-display text-[10px] text-texto-sec">{equivalente}</p>
+                )}
+              </div>
             </li>
           );
         })}

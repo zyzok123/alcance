@@ -1,6 +1,6 @@
 import { motion } from "framer-motion";
 import { HudCard } from "@/components/ui/HudCard";
-import { formatCentavos } from "@/lib/money";
+import { formatCentavos, usdToVesCentavos } from "@/lib/money";
 import type { EstadoSobre } from "@/services/envelopes";
 
 /** Color gradual de la barra: verde → ámbar → rojo suave. */
@@ -10,7 +10,15 @@ function colorBarra(fraccion: number): string {
   return "var(--color-peligro)";
 }
 
-export function EnvelopeBar({ estado, lowStim }: { estado: EstadoSobre; lowStim: boolean }) {
+export function EnvelopeBar({
+  estado,
+  tasaX10000,
+  lowStim,
+}: {
+  estado: EstadoSobre;
+  tasaX10000: number;
+  lowStim: boolean;
+}) {
   const pct = estado.fraccionSobre;
   return (
     <HudCard>
@@ -22,7 +30,7 @@ export function EnvelopeBar({ estado, lowStim }: { estado: EstadoSobre; lowStim:
           {estado.diasRestantes} {estado.diasRestantes === 1 ? "día" : "días"} rest.
         </span>
       </div>
-      <div className="flex items-baseline gap-2 mb-3">
+      <div className="flex items-baseline gap-2 mb-1">
         <span className="font-display text-xl text-texto">
           $ {formatCentavos(estado.gastadoUsdCentavos)}
         </span>
@@ -30,8 +38,16 @@ export function EnvelopeBar({ estado, lowStim }: { estado: EstadoSobre; lowStim:
           / $ {formatCentavos(estado.sobre.monto_asignado_usd_centavos)}
         </span>
       </div>
+      {tasaX10000 > 0 && (
+        <p className="text-[11px] text-texto-sec mb-2">
+          ≈ Bs {formatCentavos(usdToVesCentavos(estado.gastadoUsdCentavos, tasaX10000))} / Bs{" "}
+          {formatCentavos(
+            usdToVesCentavos(estado.sobre.monto_asignado_usd_centavos, tasaX10000),
+          )}
+        </p>
+      )}
       {/* Barra: se anima con scaleX (solo transform, 60fps). */}
-      <div className="h-2 bg-borde clip-corner-sm overflow-hidden">
+      <div className="h-2 bg-borde rounded-full overflow-hidden">
         <motion.div
           className="h-full origin-left"
           style={{ background: colorBarra(pct) }}

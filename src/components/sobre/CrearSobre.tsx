@@ -4,6 +4,7 @@ import { formatCentavos, parseToCentavos } from "@/lib/money";
 import { crearSobreManual } from "@/services/envelopes";
 import { Sheet } from "@/components/ui/Sheet";
 import { HudButton } from "@/components/ui/HudButton";
+import { glassInput } from "@/lib/utils";
 
 /**
  * Fase 1: creación manual y simple del sobre semanal.
@@ -28,10 +29,6 @@ export function CrearSobre({ abierto, onCerrar }: { abierto: boolean; onCerrar: 
     onCerrar();
   }
 
-  const inputCls =
-    "clip-corner-sm bg-superficie px-3 py-3 font-display text-texto w-full outline-none " +
-    "focus:bg-borde placeholder:text-texto-sec";
-
   return (
     <Sheet abierto={abierto} onCerrar={onCerrar} titulo="Sobre semanal">
       <div className="flex flex-col gap-4">
@@ -44,7 +41,7 @@ export function CrearSobre({ abierto, onCerrar }: { abierto: boolean; onCerrar: 
             placeholder="0,00"
             value={monto}
             onChange={(e) => setMonto(e.target.value)}
-            className={inputCls}
+            className={glassInput}
           />
         </label>
 
@@ -57,7 +54,7 @@ export function CrearSobre({ abierto, onCerrar }: { abierto: boolean; onCerrar: 
               type="date"
               value={inicio}
               onChange={(e) => setInicio(e.target.value)}
-              className={inputCls}
+              className={glassInput}
             />
           </label>
           <label className="flex flex-col gap-1.5">
@@ -70,7 +67,7 @@ export function CrearSobre({ abierto, onCerrar }: { abierto: boolean; onCerrar: 
               max={31}
               value={dias}
               onChange={(e) => setDias(Math.max(1, Number(e.target.value) || 1))}
-              className={inputCls}
+              className={glassInput}
             />
           </label>
         </div>

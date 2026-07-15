@@ -22,20 +22,29 @@ export type TipoCuenta =
   | "otro";
 
 export type TipoCategoria = "gasto" | "ingreso" | "transferencia";
-export type FuenteTasa = "bcv" | "paralelo" | "binance" | "manual";
+export type FuenteTasa = "bcv" | "paralelo" | "manual";
 
 export interface Settings {
   id: number; // singleton: siempre 1
   umbral_hormiga_usd_centavos: number; // default 300 = $3
-  tasa_preferida: "bcv" | "paralelo" | "binance";
-  /** Fase 1: única fuente de tasa (editable en Ajustes). 0 = sin configurar. */
+  /**
+   * Fase 3: fuente de tasa preferida. "paralelo" en DolarAPI es el mercado
+   * calle/Binance (misma cifra) — no hay fuente separada de Binance.
+   * "manual" fuerza tasa_manual_x10000 aunque haya caché online.
+   */
+  tasa_preferida: "bcv" | "paralelo" | "manual";
+  /** Tasa manual: override si tasa_preferida="manual", o último recurso si no hay caché. 0 = sin configurar. */
   tasa_manual_x10000: number;
   fechas_de_cobro: number[]; // días del mes, ej. [15, 30]
   moneda_display: "USD" | "VES";
   cuenta_default_id: number | null;
   moneda_registro_default: Moneda;
   hora_notificacion_diaria: string; // "HH:mm"
+  /** Fase 4: recordatorio diario local (@capacitor/local-notifications). */
+  notificaciones_activas: boolean;
   modo_bajo_estimulo: boolean;
+  /** Fase 5: pide huella/PIN al abrir la app (@capgo/capacitor-native-biometric). */
+  bloqueo_biometrico_activo: boolean;
 }
 
 export interface Account {
@@ -153,6 +162,69 @@ export class AlcanceDB extends Dexie {
       weekly_envelopes: "++id, payday_plan_id, fecha_inicio, fecha_fin",
       recurring_transactions: "++id, frecuencia",
     });
+
+    // v2 (Fase 2): categoría "Pago de deuda" para instalaciones previas a
+    // seed.ts incluirla. Idempotente: no duplica si ya existe.
+    this.version(2)
+      .stores({})
+      .upgrade(async (tx) => {
+        const cats = tx.table("categories");
+        const yaExiste = (await cats.toArray()).some(
+          (c: { nombre: string }) => c.nombre === "Pago de deuda",
+        );
+        if (!yaExiste) {
+          await cats.add({
+            nombre: "Pago de deuda",
+            tipo: "transferencia",
+            icono: "arrow-left-right",
+            color: "primario",
+            es_favorita: false,
+          });
+        }
+      });
+
+    // v3 (Fase 3): categoría "Ajuste de saldo" para reconciliar cuentas.
+    // Idempotente, mismo patrón que v2.
+    this.version(3)
+      .stores({})
+      .upgrade(async (tx) => {
+        const cats = tx.table("categories");
+        const yaExiste = (await cats.toArray()).some(
+          (c: { nombre: string }) => c.nombre === "Ajuste de saldo",
+        );
+        if (!yaExiste) {
+          await cats.add({
+            nombre: "Ajuste de saldo",
+            tipo: "transferencia",
+            icono: "scale",
+            color: "secundario",
+            es_favorita: false,
+          });
+        }
+      });
+
+    // v4 (Fase 4): notificaciones_activas en settings, default false para
+    // instalaciones existentes.
+    this.version(4)
+      .stores({})
+      .upgrade(async (tx) => {
+        const settings = tx.table("settings");
+        const row = await settings.get(1);
+        if (row && row.notificaciones_activas === undefined) {
+          await settings.update(1, { notificaciones_activas: false });
+        }
+      });
+
+    // v5 (Fase 5): bloqueo_biometrico_activo en settings, default false.
+    this.version(5)
+      .stores({})
+      .upgrade(async (tx) => {
+        const settings = tx.table("settings");
+        const row = await settings.get(1);
+        if (row && row.bloqueo_biometrico_activo === undefined) {
+          await settings.update(1, { bloqueo_biometrico_activo: false });
+        }
+      });
   }
 }
 

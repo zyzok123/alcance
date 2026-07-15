@@ -8,14 +8,18 @@
     "build": "tsc --noEmit && vite build",
     "preview": "vite preview",
     "qr": "node scripts/generate-qr.mjs",
+    "icon": "node scripts/generate-icon.mjs && npx @capacitor/assets generate --android",
     "apk:debug": "npm run build && npx cap sync android && cd android && gradlew assembleDebug"
   },
   "dependencies": {
     "@capacitor/android": "^8.4.2",
     "@capacitor/core": "^8.4.2",
     "@capacitor/haptics": "^8.0.2",
+    "@capacitor/local-notifications": "^8.2.1",
+    "@capgo/capacitor-native-biometric": "^8.6.2",
     "@fontsource/chakra-petch": "^5.2.7",
     "@fontsource/space-grotesk": "^5.2.10",
+    "@supabase/supabase-js": "^2.110.6",
     "clsx": "^2.1.1",
     "dexie": "^4.4.4",
     "dexie-react-hooks": "^4.4.0",
@@ -23,6 +27,7 @@
     "lucide-react": "^1.24.0",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
+    "recharts": "^3.9.2",
     "tailwind-merge": "^3.6.0"
   },
   "devDependencies": {
@@ -33,6 +38,7 @@
     "@types/react-dom": "^18.3.7",
     "@vitejs/plugin-react": "^6.0.3",
     "qrcode": "^1.5.4",
+    "sharp": "^0.35.3",
     "tailwindcss": "^4.3.2",
     "typescript": "^7.0.2",
     "vite": "^8.1.4"

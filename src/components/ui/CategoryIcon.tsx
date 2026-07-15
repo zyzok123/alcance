@@ -11,6 +11,7 @@ import {
   Home,
   PawPrint,
   PlusCircle,
+  Scale,
   Shirt,
   ShoppingCart,
   Utensils,
@@ -36,6 +37,7 @@ const ICONOS: Record<string, LucideIcon> = {
   banknote: Banknote,
   "plus-circle": PlusCircle,
   "arrow-left-right": ArrowLeftRight,
+  scale: Scale,
 };
 
 const COLORES: Record<string, string> = {

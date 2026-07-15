@@ -43,6 +43,12 @@ export function inicioMes(fechaISO: string): string {
   return `${fechaISO.slice(0, 7)}-01`;
 }
 
+/** Cantidad de días del mes de una fecha (28-31). */
+export function diasEnMes(fechaISO: string): number {
+  const [y, m] = fechaISO.split("-").map(Number);
+  return new Date(y ?? 1970, m ?? 1, 0).getDate();
+}
+
 /** true si fechaISO (día o instante) cae dentro de [inicio, fin] (días). */
 export function dentroDeRango(fechaISO: string, inicio: string, fin: string): boolean {
   const dia = fechaISO.slice(0, 10);

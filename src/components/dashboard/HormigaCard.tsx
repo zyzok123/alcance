@@ -30,7 +30,7 @@ export function HormigaCard({
         {Array.from({ length: MAX_PUNTOS }, (_, i) => (
           <span
             key={i}
-            className="aspect-square w-full"
+            className="aspect-square w-full rounded-full"
             style={{
               background: i < encendidos ? "var(--color-alerta)" : "var(--color-borde)",
               opacity: i < encendidos ? 0.9 : 0.5,

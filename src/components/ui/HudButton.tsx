@@ -4,10 +4,13 @@ import { cn } from "@/lib/utils";
 type Variante = "primario" | "secundario" | "fantasma" | "peligro";
 
 const ESTILOS: Record<Variante, string> = {
-  primario: "bg-primario text-fondo font-semibold",
-  secundario: "bg-secundario text-fondo font-semibold",
-  fantasma: "bg-superficie text-texto",
-  peligro: "bg-peligro text-fondo font-semibold",
+  primario:
+    "bg-primario/90 text-fondo font-semibold shadow-[inset_0_1px_0_rgba(255,255,255,0.45),0_6px_20px_rgba(95,214,168,0.35)]",
+  secundario:
+    "bg-secundario/90 text-fondo font-semibold shadow-[inset_0_1px_0_rgba(255,255,255,0.45),0_6px_20px_rgba(242,167,101,0.35)]",
+  fantasma: "glass text-texto",
+  peligro:
+    "bg-peligro/90 text-fondo font-semibold shadow-[inset_0_1px_0_rgba(255,255,255,0.45),0_6px_20px_rgba(234,129,136,0.35)]",
 };
 
 export function HudButton({
@@ -22,7 +25,7 @@ export function HudButton({
   return (
     <button
       className={cn(
-        "clip-corner-sm px-4 py-3 font-display text-sm tracking-wider uppercase",
+        "rounded-full px-5 py-3 font-display text-sm tracking-wider uppercase backdrop-blur-md",
         "active:scale-[0.97] transition-transform disabled:opacity-40",
         ESTILOS[variante],
         className,

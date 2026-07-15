@@ -25,6 +25,8 @@ const CATEGORIAS_SEED: Omit<Category, "id">[] = [
   { nombre: "Extra", tipo: "ingreso", icono: "plus-circle", color: "exito", es_favorita: false },
   // Transferencias
   { nombre: "Transferencia", tipo: "transferencia", icono: "arrow-left-right", color: "primario", es_favorita: false },
+  { nombre: "Pago de deuda", tipo: "transferencia", icono: "arrow-left-right", color: "primario", es_favorita: false },
+  { nombre: "Ajuste de saldo", tipo: "transferencia", icono: "scale", color: "secundario", es_favorita: false },
 ];
 
 db.on("populate", async () => {
@@ -56,6 +58,8 @@ db.on("populate", async () => {
     cuenta_default_id: cuentaBsId ?? null,
     moneda_registro_default: "VES",
     hora_notificacion_diaria: "08:00",
+    notificaciones_activas: false,
     modo_bajo_estimulo: false,
+    bloqueo_biometrico_activo: false,
   });
 });
