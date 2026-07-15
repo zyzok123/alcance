@@ -125,9 +125,11 @@ Linux); en esta máquina vive en
 
 - `npm run apk:debug` (Windows) → APK en
   `android/app/build/outputs/apk/debug/app-debug.apk`. Sin SDK local, usar CI.
-- CI `.github/workflows/build-apk.yml`: push a main → Java 17 + gradle
-  assembleDebug → **Release público** con tag `v0.1.<run_number>` y el APK
-  adjunto. QR del README apunta a `releases/latest`.
+- CI `.github/workflows/build-apk.yml`: push a main → Node 22 + Java 21 +
+  gradle assembleDebug → **Release público** con tag `v0.1.<run_number>` y
+  el APK adjunto. QR del README apunta a `releases/latest`. (Capacitor 8
+  exige Node ≥22 y Java 21 — versiones menores fallan en `cap sync` /
+  `compileDebugJavaWithJavac`.)
 - Repo: `github.com/zyzok123/alcance`.
 - **Release firmado (Fase 5)**: crear keystore propio:
   `keytool -genkeypair -v -keystore alcance.keystore -alias alcance -keyalg RSA -keysize 2048 -validity 10000`
